@@ -1,0 +1,118 @@
+local Lycan = {}
+Lycan.optionEnabled = Menu.AddOptionBool({"Hero Specific", "Lycan by Crencoder"}, "Включить", false)
+Menu.AddMenuIcon({"Hero Specific", "Lycan by Crencoder"}, "panorama/images/heroes/icons/npc_dota_hero_lycan_png.vtex_c")
+Menu.AddOptionIcon(Lycan.optionEnabled, "panorama/images//spellicons/lycan_feral_impulse_png.vtex_c")
+Lycan.optionKey = Menu.AddKeyOption({"Hero Specific", "Lycan by Crencoder"}, "Кнопка комбо", Enum.ButtonCode.KEY_V)
+Lycan.NearestTarget = Menu.AddOptionSlider({"Hero Specific", "Lycan by Crencoder"}, "Радиус поиска цели от мыши", 200, 800, 100)
+
+Lycan.Items = {"Hero Specific", "Lycan by Crencoder", "Артефакты в комбо"}
+Menu.AddOptionIcon(Lycan.Items, "panorama/images/items/rapier_png.vtex_c")
+Lycan.Skill = {"Hero Specific", "Lycan by Crencoder", "Скилы в комбо"}
+Menu.AddOptionIcon(Lycan.Skill, "panorama/images/items/crown_png.vtex_c")
+-- Предметы
+Lycan.Necronomicon = Menu.AddOptionBool(Lycan.Items, "Некроминикон", false)
+Menu.AddOptionIcon(Lycan.Necronomicon, "panorama/images/items/necronomicon_3_png.vtex_c")
+Lycan.Abyssalblade = Menu.AddOptionBool(Lycan.Items, "Абьебасел Блейд", false)
+Menu.AddOptionIcon(Lycan.Abyssalblade, "panorama/images/items/abyssal_blade_png.vtex_c")
+Lycan.Blackkingbar = Menu.AddOptionBool(Lycan.Items, "БКБ", false)
+Menu.AddOptionIcon(Lycan.Blackkingbar, "panorama/images/items/black_king_bar_png.vtex_c")
+Lycan.Rodofatos = Menu.AddOptionBool(Lycan.Items, "Род", false)
+Menu.AddOptionIcon(Lycan.Rodofatos, "panorama/images/items/rod_of_atos_png.vtex_c")
+Lycan.Shivasguard = Menu.AddOptionBool(Lycan.Items, "Шива", false)
+Menu.AddOptionIcon(Lycan.Shivasguard, "panorama/images/items/shivas_guard_png.vtex_c")
+-- Скилы
+Lycan.Wolfs = Menu.AddOptionBool(Lycan.Skill, "Призыв волков", false)
+Menu.AddOptionIcon(Lycan.Wolfs, "panorama/images/spellicons/lycan_summon_wolves_png.vtex_c")
+Lycan.Baf = Menu.AddOptionBool(Lycan.Skill, "Баф", false)
+Menu.AddOptionIcon(Lycan.Baf, "panorama/images/spellicons/lycan_howl_png.vtex_c")
+Lycan.Ult = Menu.AddOptionBool(Lycan.Skill, "Shapeshift", false)
+Menu.AddOptionIcon(Lycan.Ult, "panorama/images/spellicons/lycan_shapeshift_png.vtex_c")
+
+local font = Renderer.LoadFont("Tahoma", 20, Enum.FontWeight.EXTRABOLD);
+
+local myHero = nil
+local enemy = nil
+Lycan.lastTick = 0
+local sleep_after_attack = 0
+local sleep_after_attack = 0
+local myMana = 0
+
+function Lycan.onUpdate()
+	if not Menu.IsEnable(Lycan.optionEnabled) or not Engine.IsInGame() or not Heroes.GetLocal() then return end
+	myHero = Heroes.GetLocal()
+	
+	if NPC.GetUnitName(myHero) ~= "npc_dota_hero_lycan" then return end
+    if not Entity.IsAlive(myHero) or NPC.IsStunned(myHero) or NPC.IsSilenced(myHero) then return end
+
+
+
+	if Menu.IsKeyDown(Lycan.optionKey) then
+		enemy = Input.GetNearestHeroToCursor(Entity.GetTeamNum(myHero), Enum.TeamType.TEAM_ENEMY)
+		if enemy and enemy ~= 0 then
+			Lycan.Combo(myHero, enemy)
+			return
+		end
+    end
+    
+
+end
+
+
+function Lycan.Combo(myHero,enemy)
+
+	local wolfs = NPC.GetAbility(myHero, "lycan_summon_wolves")
+	local howl = NPC.GetAbility(myHero, "lycan_howl")
+	local shapeshift = NPC.GetAbility(myHero, "lycan_shapeshift")
+	
+	local necronomicon = NPC.GetItem(myHero, "item_necronomicon")
+	local abyssalblade = NPC.GetItem(myHero, "item_abyssal_blade")
+	local blackkingbar = NPC.GetItem(myHero, "item_black_king_bar")
+	local rodofatos = NPC.GetItem(myHero, "item_brodofatos")
+	local shivasguard = NPC.GetItem(myHero, "item_shivas_guard")
+
+    myMana = NPC.GetMana(myHero)
+
+
+    if Menu.IsKeyDown(Lycan.optionKey) and Entity.GetHealth(enemy) > 0  then
+        if not NPC.IsEntityInRange(myHero, enemy, 1000)	then return end
+        local enemy_origin = Entity.GetAbsOrigin(enemy)
+        local hp = Entity.GetHealth(myHero)
+        local maxhp = Entity.GetMaxHealth(myHero)
+        local cursor_pos = Input.GetWorldCursorPos()
+	    if (cursor_pos - enemy_origin):Length2D() > Menu.GetValue(Lycan.NearestTarget) then enemy = nil return end
+        if Lycan.SleepReady(0.6) then
+
+            -- Cкилы
+        if shapeshift and Ability.CastNoTarget(shapeshift, myMana) and Menu.IsEnabled(Lycan.Shapeshift) then
+            Ability.CastNoTarget(shapeshift)
+            Lycan.lastTick = os.clock()
+        end
+		if wolfs and Ability.CastNoTarget(wolfs, myMana) and Menu.IsEnabled(Lycan.Wolfs) then
+            Ability.CastNoTarget(wolfs)
+            Lycan.lastTick = os.clock()
+        end
+        if howl and Ability.CastNoTarget(howl, myMana) and Menu.IsEnabled(Lycan.Baf) then
+            Ability.CastTarget(howl)
+            Lycan.lastTick = os.clock()
+        end
+
+            -- Предметы
+			if blackkingbar and Ability.IsReady(blackkingbar) and Menu.IsEnabled(Lycan.blackkingbar) then Ability.CastNoTarget(blackkingbar) end
+            if shivasguard and Ability.IsReady(shivasguard, myMana) and Menu.IsEnabled(Lycan.shivasguard) then Ability.CastNoTarget(shiva) end
+            if abyssalblade and Ability.IsReady(Abyssalblade, myMana) and Menu.IsEnabled(Lycan.abyssalblade) then Ability.CastTarget(Abyssalbladey) end
+            if rodofatos and Ability.IsReady(Rodofatos, myMana) and Menu.IsEnabled(Lycan.rodofatos) then Ability.CastTarget(Rodofatos) end
+            if necronomicon and Ability.IsReady(Necronomicon, myMana) and Menu.IsEnabled(Lycan.necronomicon) then Ability.CastNoTarget(Necronomicon) end
+        end
+end
+end
+
+function Lycan.SleepReady(sleep, lastTick)
+    if (os.clock() - Lycan.lastTick) >= sleep then
+		return true
+    end
+    
+	return false
+end
+
+
+return Lycan
