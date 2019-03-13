@@ -9,7 +9,6 @@
 --║║─╔╗─╚╗╔╝─║║─╔╗║╚═╝║║║╚╗║║     ╚══╗║║║─╔╗║╔╗╔╝─║║─║╔══╝──║║──--
 --║╚═╝║──║║──║╚═╝║║╔═╗║║║─║║║     ║╚═╝║║╚═╝║║║║╚╗╔╣─╗║║─────║║──--
 --╚═══╝──╚╝──╚═══╝╚╝─╚╝╚╝─╚═╝     ╚═══╝╚═══╝╚╝╚═╝╚══╝╚╝─────╚╝──--
-
 local Lycan = {}
 Lycan.optionEnabled = Menu.AddOptionBool({"Hero Specific", "Lycan by Crencoder"}, "Включить", false)
 Menu.AddMenuIcon({"Hero Specific", "Lycan by Crencoder"}, "panorama/images/heroes/icons/npc_dota_hero_lycan_png.vtex_c")
@@ -21,6 +20,7 @@ Lycan.Items = {"Hero Specific", "Lycan by Crencoder", "Артефакты в к�
 Menu.AddOptionIcon(Lycan.Items, "panorama/images/items/rapier_png.vtex_c")
 Lycan.Skill = {"Hero Specific", "Lycan by Crencoder", "Скилы в комбо"}
 Menu.AddOptionIcon(Lycan.Skill, "panorama/images/items/crown_png.vtex_c")
+
 -- Предметы
 Lycan.Necronomicon = Menu.AddOptionBool(Lycan.Items, "Некроминикон", false)
 Menu.AddOptionIcon(Lycan.Necronomicon, "panorama/images/items/necronomicon_3_png.vtex_c")
@@ -32,6 +32,11 @@ Lycan.Rodofatos = Menu.AddOptionBool(Lycan.Items, "Род", false)
 Menu.AddOptionIcon(Lycan.Rodofatos, "panorama/images/items/rod_of_atos_png.vtex_c")
 Lycan.Shivasguard = Menu.AddOptionBool(Lycan.Items, "Шива", false)
 Menu.AddOptionIcon(Lycan.Shivasguard, "panorama/images/items/shivas_guard_png.vtex_c")
+Lycan.Orchid = Menu.AddOptionBool(Lycan.Items, "Орчид", false)
+Menu.AddOptionIcon(Lycan.Orchid, "panorama/images/items/orchid_png.vtex_c")
+Lycan.Nullifier = Menu.AddOptionBool(Lycan.Items,"Нулифаер", false)
+Menu.AddOptionIcon(Lycan.Nullifier, "panorama/images/items/nullifier_png.vtex_c")
+
 -- Скилы
 Lycan.Wolfs = Menu.AddOptionBool(Lycan.Skill, "Призыв волков", false)
 Menu.AddOptionIcon(Lycan.Wolfs, "panorama/images/spellicons/lycan_summon_wolves_png.vtex_c")
@@ -81,6 +86,9 @@ function Lycan.Combo(myHero,enemy)
 	local blackkingbar = NPC.GetItem(myHero, "item_black_king_bar")
 	local rodofatos = NPC.GetItem(myHero, "item_brodofatos")
 	local shivasguard = NPC.GetItem(myHero, "item_shivas_guard")
+    local orchid = NPC.GetItem(myHero, "item_orchid")
+    local nullifier = NPC.GetItem(myHero, "item_nullifier")
+    local solarcrest = NPC.GetItem(myHero, "item_solar_crest")
 
     myMana = NPC.GetMana(myHero)
 
@@ -114,6 +122,9 @@ function Lycan.Combo(myHero,enemy)
             if abyssalblade and Ability.IsReady(Abyssalblade, myMana) and Menu.IsEnabled(Lycan.abyssalblade) then Ability.CastTarget(Abyssalbladey) end
             if rodofatos and Ability.IsReady(Rodofatos, myMana) and Menu.IsEnabled(Lycan.rodofatos) then Ability.CastTarget(Rodofatos) end
             if necronomicon and Ability.IsReady(Necronomicon, myMana) and Menu.IsEnabled(Lycan.necronomicon) then Ability.CastNoTarget(Necronomicon) end
+            if orchid and Ability.IsReady(Orchid, myMana) and Menu.IsEnabled(Lycan.orchid) then Ability.CastTarget(Orchid) end
+            if nullifier and Ability.IsReady(Nullifier, myMana) and Menu.IsEnabled(Lycan.nullifier) then Ability.CastTarget(Nullifier) end
+            if solarcrest and Ability.IsReady(SolarCrest, myMana) and Menu.IsEnabled(Lycan.solarcrest) then Ability.CastTarget(SolarCrest) end
         end
 end
 end
