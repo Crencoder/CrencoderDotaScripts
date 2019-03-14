@@ -13,7 +13,8 @@
 local Clinkz = {}
 
 Clinkz.optionEnabled = Menu.AddOptionBool({"Hero Specific", "Clinkz by Crencoder"}, "Включить", false)
-Clinkz.optionKey = Menu.AddKeyOption ({"Hero Specific", "Clinkz by Crencoder"}, "ComboKey", Enum.ButtonCode.KEY_V)
+Menu.AddMenuIcon({"Hero Specific", "Clinkz by Crencoder"}, "panorama/images/heroes/icons/npc_dota_hero_clinkz_png.vtex_c")
+Clinkz.optionKey = Menu.AddKeyOption ({"Hero Specific", "Clinkz by Crencoder"}, "Клавиша для комбо", Enum.ButtonCode.KEY_V)
 
 Clinkz.Items = {"Hero Specific", "Clinkz by Crencoder", "Предметы в комбинации"}
 Menu.AddOptionIcon(Clinkz.Items, "panorama/images/items/rapier_png.vtex_c")
@@ -37,8 +38,8 @@ Clinkz.Solarcrest = Menu.AddOptionBool(Clinkz.Items, "Соляра", false)
 
 --Скилы--
 Clinkz.Strafe = Menu.AddOptionBool(Clinkz.Skill, "Стрейф", false)
-Clinkz.Arrows = Menu.AddOptionBool(Clinkz.Arrows, "Горящие стрелы", false)
-Clinkz.Army = Menu.AddOptionBool(Clinkz.Army, "Армия скелетов", false)
+Clinkz.Arrows = Menu.AddOptionBool(Clinkz.Skill, "Горящие стрелы", false)
+Clinkz.Army = Menu.AddOptionBool(Clinkz.Skill, "Армия скелетов", false)
 
 local font = Renderer.LoadFont("Tahoma", 20, Enum.FontWeight.EXTRABOLD);
 
@@ -66,9 +67,39 @@ function Clinkz.OnUpdate()
 end
 
 function Clinkz.Combo(myHero, enemy)
-    --Скилы--
+
 	local Strafe = NPC.GetAbilty(myHero, "clinkz_strafe")
-	local Arrows = NPC.GetAbilty(myHero, "clinkz_searing_arrow")
+	local Arrows = NPC.GetAbilty(myHero, "clinkz_searing_arrows")
 	local Army = NPC.GetAbilty(myHero, "burning_army_clinkz")
+	--Проверка манны--
+	myMana = NPC.GetMana(myHero)
+	--Проверки--
+	if Menu.IsKeyDown(Clinkz.optionKey) and Entity.GetHealth(enemy) > 0  then
+		if not NPC.IsEntityInRange(myHero, enemy, 500)	then return end
+        local enemy_origin = Entity.GetAbsOrigin(enemy)
+        local hp = Entity.GetHealth(myHero)
+        local maxhp = Entity.GetMaxHealth(myHero)
+        local cursor_pos = Input.GetWorldCursorPos()
+	    if (cursor_pos - enemy_origin):Length2D() > Menu.GetValue(Clinkz.NearestTarget) then enemy = nil return end
+        if Clinkzn.SleepReady(0.6) then
+	--Скилы--
+	if strafe and Ability.CastNoTarget(strafe, myMana) and menu.IsEnable(Clinkz.Strafe) then
+		Ability.CastNoTarget(strafe)
+	end
+	if arrows and Ability.CastTarget(arrows, myMana) and menu.IsEnable(Clinkz.Arrows) then
+		Ability.CastTarget(arrows)
+	end
+	if army and Ability.CastTarget(Army, myMana) and menu.IsEnable(Clinkz.Army) then
+	end
 	--Предметы--
+		if blackkingbar and Ability.IsReady(blackkingbar) and Menu.IsEnabled(Clinkz.blackkingbar) then Ability.CastNoTarget(blackkingbar) end
+        if shivasguard and Ability.IsReady(shivasguard, myMana) and Menu.IsEnabled(Clinkzn.shivasguard) then Ability.CastNoTarget(shiva) end
+        if abyssalblade and Ability.IsReady(Abyssalblade, myMana) and Menu.IsEnabled(Clinkzn.abyssalblade) then Ability.CastTarget(Abyssalbladey) end
+        if orchid and Ability.IsReady(Orchid, myMana) and Menu.IsEnabled(Clinkzn.orchid) then Ability.CastTarget(Orchid) end
+        if nullifier and Ability.IsReady(Nullifier, myMana) and Menu.IsEnabled(Clinkzn.nullifier) then Ability.CastTarget(Nullifier) end
+        if solarcrest and Ability.IsReady(SolarCrest, myMana) and Menu.IsEnabled(Clinkzn.solarcrest) then Ability.CastTarget(SolarCrest) end
+        end
 end
+end
+
+return Clinkz
