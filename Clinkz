@@ -49,8 +49,8 @@ local myMana = 0
 local sleep_after_attack = 0
 local sleep_after_attack = 0
 
-function Clinkz.OnUpdate()
-	if not menu.IsEnable(Clinkz.optionEnabled) or not Engine.IsInGame() or not Heroes.GetLocal() then return end
+function Clinkz.onUpdate()
+	if not Menu.IsEnable(Clinkz.optionEnabled) or not Engine.IsInGame() or not Heroes.GetLocal() then return end
 	myHero = Heroes.GetLocal()
 
 	if NPC.GetUnitName(myHero) ~= "npc_dota_hero_clinkz" then return end
