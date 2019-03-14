@@ -1,0 +1,74 @@
+--╔═╗╔═╗╔═╗╔═╦╗╔═╗╔═╗╔══╗╔═╗╔═╗-- 
+--║╔╝║╬║║╦╝║║║║║╔╝║║║╚╗╗║║╦╝║╬║--
+--║╚╗║╗╣║╩╗║║║║║╚╗║║║╔╩╝║║╩╗║╗╣--
+--╚═╝╚╩╝╚═╝╚╩═╝╚═╝╚═╝╚══╝╚═╝╚╩╝-- 
+
+--╔═══╗╔═══╗╔═══╗╔══╗╔═══╗╔════╗--
+--║╔═╗║║╔═╗║║╔═╗║╚╣─╝║╔═╗║║╔╗╔╗║--
+--║╚══╗║║─╚╝║╚═╝║─║║─║╚═╝║╚╝║║╚╝--
+--╚══╗║║║─╔╗║╔╗╔╝─║║─║╔══╝──║║──--
+--║╚═╝║║╚═╝║║║║╚╗╔╣─╗║║─────║║──--
+--╚═══╝╚═══╝╚╝╚═╝╚══╝╚╝─────╚╝──--
+
+local Clinkz = {}
+
+Clinkz.optionEnabled = Menu.AddOptionBool({"Hero Specific", "Clinkz by Crencoder"}, "Включить", false)
+Clinkz.optionKey = Menu.AddKeyOption ({"Hero Specific", "Clinkz by Crencoder"}, "ComboKey", Enum.ButtonCode.KEY_V)
+
+Clinkz.Items = {"Hero Specific", "Clinkz by Crencoder", "Предметы в комбинации"}
+Menu.AddOptionIcon(Clinkz.Items, "panorama/images/items/rapier_png.vtex_c")
+Clinkz.Skill = {"Hero Specific", "Clinkz by Crencoder", "Скилы в комбинации"}
+Menu.AddOptionIcon(Clinkz.Skill, "panorama/images/items/crown_png.vtex_c")
+
+
+
+--Предметы--
+Clinkz.Abyssalblade = Menu.AddOptionBool(Clinkz.Items, "Абиссал Блейд", false)
+Menu.AddOptionIcon(Clinkz.Abyssalblade, "panorama/images/items/abyssal_blade_png.vtex_c")
+Clinkz.Blackkingbar = Menu.AddOptionBool(Clinkz.Items, "БКБ", false)
+Menu.AddOptionIcon(Clinkz.Blackkingbar, "panorama/images/items/black_king_bar_png.vtex_c")
+Clinkz.Shivasguard = Menu.AddOptionBool(Clinkz.Items, "Шива", false)
+Menu.AddOptionIcon(Clinkz.Shivasguard, "panorama/images/items/shivas_guard_png.vtex_c")
+Clinkz.Orchid = Menu.AddOptionBool(Clinkz.Items, "Орчид", false)
+Menu.AddOptionIcon(Clinkz.Orchid, "panorama/images/items/orchid_png.vtex_c")
+Clinkz.Nullifier = Menu.AddOptionBool(Clinkz.Items,"Нулифаер", false)
+Menu.AddOptionIcon(Clinkz.Nullifier, "panorama/images/items/nullifier_png.vtex_c")
+Clinkz.Solarcrest = Menu.AddOptionBool(Clinkz.Items, "Соляра", false)
+
+--Скилы--
+Clinkz.Strafe = Menu.AddOptionBool(Clinkz.Skill, "Стрейф", false)
+Clinkz.Arrows = Menu.AddOptionBool(Clinkz.Arrows, "Горящие стрелы", false)
+Clinkz.Army = Menu.AddOptionBool(Clinkz.Army, "Армия скелетов", false)
+
+local font = Renderer.LoadFont("Tahoma", 20, Enum.FontWeight.EXTRABOLD);
+
+local myHero = nil
+local enumy = nil
+local myMana = 0
+local sleep_after_attack = 0
+local sleep_after_attack = 0
+
+function Clinkz.OnUpdate()
+	if not menu.IsEnable(Clinkz.optionEnabled) or not Engine.IsInGame() or not Heroes.GetLocal() then return end
+	myHero = Heroes.GetLocal()
+
+	if NPC.GetUnitName(myHero) ~= "npc_dota_hero_clinkz" then return end
+    if not Entity.IsAlive(myHero) or NPC.IsStunned(myHero) or NPC.IsSilenced(myHero) then return end
+
+
+    if menu.IsKeyDown(Clinkz.optionKey) then
+		enemy = Input.GetNearestHeroToCursor(Entity.GetTeamNum(myHero), Enum.TeamType.TEAM_ENEMY)
+				if enemy and enemy ~= 0 then
+					Clinkz.Combo(myHero, enemy)
+					return
+				end
+	end
+end
+
+function Clinkz.Combo(myHero, enemy)
+    --Скилы--
+	local Strafe = NPC.GetAbilty(myHero, "clinkz_strafe")
+	local Arrows = NPC.GetAbilty(myHero, "clinkz_searing_arrow")
+	local Army = NPC.GetAbilty(myHero, "burning_army_clinkz")
+	--Предметы--
+end
