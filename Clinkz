@@ -90,6 +90,7 @@ function Clinkz.Combo(myHero, enemy)
 		Ability.CastTarget(arrows)
 	end
 	if army and Ability.CastTarget(Army, myMana) and menu.IsEnable(Clinkz.Army) then
+		Ability.CastTarget(army)
 	end
 	--Предметы--
 		if blackkingbar and Ability.IsReady(blackkingbar) and Menu.IsEnabled(Clinkz.blackkingbar) then Ability.CastNoTarget(blackkingbar) end
