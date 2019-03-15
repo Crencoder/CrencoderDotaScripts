@@ -1,106 +1,113 @@
---╔═╗╔═╗╔═╗╔═╦╗╔═╗╔═╗╔══╗╔═╗╔═╗-- 
---║╔╝║╬║║╦╝║║║║║╔╝║║║╚╗╗║║╦╝║╬║--
---║╚╗║╗╣║╩╗║║║║║╚╗║║║╔╩╝║║╩╗║╗╣--
---╚═╝╚╩╝╚═╝╚╩═╝╚═╝╚═╝╚══╝╚═╝╚╩╝-- 
+local Clinkz = {} 
 
---╔═══╗╔═══╗╔═══╗╔══╗╔═══╗╔════╗--
---║╔═╗║║╔═╗║║╔═╗║╚╣─╝║╔═╗║║╔╗╔╗║--
---║╚══╗║║─╚╝║╚═╝║─║║─║╚═╝║╚╝║║╚╝--
---╚══╗║║║─╔╗║╔╗╔╝─║║─║╔══╝──║║──--
---║╚═╝║║╚═╝║║║║╚╗╔╣─╗║║─────║║──--
---╚═══╝╚═══╝╚╝╚═╝╚══╝╚╝─────╚╝──--
+Clinkz.optionEnabled = Menu.AddOptionBool({"Hero Specific", "Clinkz by Crencoder"}, "Включить", false) 
+Menu.AddMenuIcon({"Hero Specific", "Clinkz by Crencoder"}, "panorama/images/heroes/icons/npc_dota_hero_clinkz_png.vtex_c") 
+Clinkz.optionKey = Menu.AddKeyOption ({"Hero Specific", "Clinkz by Crencoder"}, "Клавиша для комбо", Enum.ButtonCode.KEY_V) 
 
-local Clinkz = {}
-
-Clinkz.optionEnabled = Menu.AddOptionBool({"Hero Specific", "Clinkz by Crencoder"}, "Включить", false)
-Menu.AddMenuIcon({"Hero Specific", "Clinkz by Crencoder"}, "panorama/images/heroes/icons/npc_dota_hero_clinkz_png.vtex_c")
-Clinkz.optionKey = Menu.AddKeyOption ({"Hero Specific", "Clinkz by Crencoder"}, "Клавиша для комбо", Enum.ButtonCode.KEY_V)
-
-Clinkz.Items = {"Hero Specific", "Clinkz by Crencoder", "Предметы в комбинации"}
-Menu.AddOptionIcon(Clinkz.Items, "panorama/images/items/rapier_png.vtex_c")
-Clinkz.Skill = {"Hero Specific", "Clinkz by Crencoder", "Скилы в комбинации"}
-Menu.AddOptionIcon(Clinkz.Skill, "panorama/images/items/crown_png.vtex_c")
+Clinkz.Items = {"Hero Specific", "Clinkz by Crencoder", "Предметы в комбинации"} 
+Menu.AddOptionIcon(Clinkz.Items, "panorama/images/items/rapier_png.vtex_c") 
+Clinkz.Skill = {"Hero Specific", "Clinkz by Crencoder", "Скилы в комбинации"} 
+Menu.AddOptionIcon(Clinkz.Skill, "panorama/images/items/crown_png.vtex_c") 
+Clinkz.NearestTarget = Menu.AddOptionSlider({"Hero Specific", "Clinkz by Crencoder"}, "Радиус поиска цели около курсора", 200, 800, 100) 
 
 
+--Предметы— 
+Clinkz.Abyssalblade = Menu.AddOptionBool(Clinkz.Items, "Абиссал Блейд", false) 
+Menu.AddOptionIcon(Clinkz.Abyssalblade, "panorama/images/items/abyssal_blade_png.vtex_c") 
+Clinkz.Blackkingbar = Menu.AddOptionBool(Clinkz.Items, "БКБ", false) 
+Menu.AddOptionIcon(Clinkz.Blackkingbar, "panorama/images/items/black_king_bar_png.vtex_c") 
+Clinkz.Shivasguard = Menu.AddOptionBool(Clinkz.Items, "Шива", false) 
+Menu.AddOptionIcon(Clinkz.Shivasguard, "panorama/images/items/shivas_guard_png.vtex_c") 
+Clinkz.Orchid = Menu.AddOptionBool(Clinkz.Items, "Орчид", false) 
+Menu.AddOptionIcon(Clinkz.Orchid, "panorama/images/items/orchid_png.vtex_c") 
+Clinkz.Nullifier = Menu.AddOptionBool(Clinkz.Items,"Нулифаер", false) 
+Menu.AddOptionIcon(Clinkz.Nullifier, "panorama/images/items/nullifier_png.vtex_c") 
+Clinkz.Solarcrest = Menu.AddOptionBool(Clinkz.Items, "Соляра", false) 
 
---Предметы--
-Clinkz.Abyssalblade = Menu.AddOptionBool(Clinkz.Items, "Абиссал Блейд", false)
-Menu.AddOptionIcon(Clinkz.Abyssalblade, "panorama/images/items/abyssal_blade_png.vtex_c")
-Clinkz.Blackkingbar = Menu.AddOptionBool(Clinkz.Items, "БКБ", false)
-Menu.AddOptionIcon(Clinkz.Blackkingbar, "panorama/images/items/black_king_bar_png.vtex_c")
-Clinkz.Shivasguard = Menu.AddOptionBool(Clinkz.Items, "Шива", false)
-Menu.AddOptionIcon(Clinkz.Shivasguard, "panorama/images/items/shivas_guard_png.vtex_c")
-Clinkz.Orchid = Menu.AddOptionBool(Clinkz.Items, "Орчид", false)
-Menu.AddOptionIcon(Clinkz.Orchid, "panorama/images/items/orchid_png.vtex_c")
-Clinkz.Nullifier = Menu.AddOptionBool(Clinkz.Items,"Нулифаер", false)
-Menu.AddOptionIcon(Clinkz.Nullifier, "panorama/images/items/nullifier_png.vtex_c")
-Clinkz.Solarcrest = Menu.AddOptionBool(Clinkz.Items, "Соляра", false)
+--Скилы— 
+Clinkz.Strafe = Menu.AddOptionBool(Clinkz.Skill, "Стрейф", false) 
+Clinkz.Arrows = Menu.AddOptionBool(Clinkz.Skill, "Горящие стрелы", false) 
+Clinkz.Army = Menu.AddOptionBool(Clinkz.Skill, "Армия скелетов", false) 
 
---Скилы--
-Clinkz.Strafe = Menu.AddOptionBool(Clinkz.Skill, "Стрейф", false)
-Clinkz.Arrows = Menu.AddOptionBool(Clinkz.Skill, "Горящие стрелы", false)
-Clinkz.Army = Menu.AddOptionBool(Clinkz.Skill, "Армия скелетов", false)
+local font = Renderer.LoadFont("Tahoma", 20, Enum.FontWeight.EXTRABOLD); 
 
-local font = Renderer.LoadFont("Tahoma", 20, Enum.FontWeight.EXTRABOLD);
+local myHero = nil 
+local enemy = nil 
+local myMana
+local blackkingbar 
+local shivasguard 
+local abyssalblade 
+local orchid 
+local nullifier 
+local solarcrest 
 
-local myHero = nil
-local enumy = nil
-local myMana = 0
-local sleep_after_attack = 0
-local sleep_after_attack = 0
+Clinkz.lastTick = 0 
 
-function Clinkz.onUpdate()
-	if not Menu.IsEnable(Clinkz.optionEnabled) or not Engine.IsInGame() or not Heroes.GetLocal() then return end
-	myHero = Heroes.GetLocal()
+function Clinkz.onUpdate() 
+if not Menu.IsEnable(Clinkz.optionEnabled) or not Engine.IsInGame() or not Heroes.GetLocal() then return end 
+myHero = Heroes.GetLocal() 
 
-	if NPC.GetUnitName(myHero) ~= "npc_dota_hero_clinkz" then return end
-    if not Entity.IsAlive(myHero) or NPC.IsStunned(myHero) or NPC.IsSilenced(myHero) then return end
+if NPC.GetUnitName(myHero) ~= "npc_dota_hero_clinkz" then return end 
+if not Entity.IsAlive(myHero) or NPC.IsStunned(myHero) or NPC.IsSilenced(myHero) then return end 
+enemy = Input.GetNearestHeroToCursor(Entity.GetTeamNum(myHero), Enum.TeamType.TEAM_ENEMY) 
+Log.Write(NPC.GetUnitName(enemy))
+if Menu.IsKeyDown(Clinkz.optionKey) then
+enemy = Input.GetNearestHeroToCursor(Entity.GetTeamNum(myHero), Enum.TeamType.TEAM_ENEMY) 
+if enemy and enemy ~= 0 then 
+Log.Write(NPC.GetUnitName(enemy))
+Clinkz.Combo(myHero, enemy) 
+return 
+end 
+end 
+end 
 
+function Clinkz.Combo(myHero, enemy) 
+Log.Write(NPC.GetUnitName(enemy))
+local strafe = NPC.GetAbilty(myHero, "clinkz_strafe")
+local arrows = NPC.GetAbilty(myHero, "clinkz_searing_arrows")
+local army = NPC.GetAbilty(myHero, "clinkz_burning_army")
 
-    if menu.IsKeyDown(Clinkz.optionKey) then
-		enemy = Input.GetNearestHeroToCursor(Entity.GetTeamNum(myHero), Enum.TeamType.TEAM_ENEMY)
-				if enemy and enemy ~= 0 then
-					Clinkz.Combo(myHero, enemy)
-					return
-				end
-	end
+blackkingbar = NPC.GetItem(myHero, "item_black_king_bar")
+shivasguard = NPC.GetItem(myHero, "item_shivas_guard")
+abyssalblade = NPC.GetItem(myHero, "item_abyssal_blade")
+orchid = NPC.GetItem(myHero, "item_orchid")
+nullifier = NPC.GetItem(myHero, "item_nullifier")
+solarcrest = NPC.GetItem(myHero, "item_solar_crest")
+--Проверка манны
+myMana = NPC.GetMana(myHero)
+--Проверки
+if Menu.IsKeyDown(Clinkz.optionKey) and Entity.GetHealth(enemy) > 0 then
+if not NPC.IsEntityInRange(myHero, enemy, 1000) then return end
+local enemy_origin = Entity.GetAbsOrigin(enemy)
+local cursor_pos = Input.GetWorldCursorPos()
+if (cursor_pos - enemy_origin):Length2D() > Menu.GetValue(Clinkz.NearestTarget) then enemy = nil return end
+if Clinkz.SleepReady(0.6) then
+--Скилы
+if strafe and Ability.IsReady(strafe, myMana) and menu.IsEnable(Clinkz.Strafe) then
+Ability.CastNoTarget(strafe)
+end
+if arrows and Ability.IsReady(arrows, myMana) and menu.IsEnable(Clinkz.Arrows) then
+Ability.CastTarget(arrows)
+end
+if army and Ability.IsReady(Army, myMana) and menu.IsEnable(Clinkz.Army) then
+Ability.CastPosition(army, enemy_origin)
+end
+--Предметы
+if blackkingbar and Ability.IsReady(blackkingbar) and Menu.IsEnabled(Clinkz.Blackkingbar) then Ability.CastNoTarget(blackkingbar) end
+if shivasguard and Ability.IsReady(shivasguard, myMana) and Menu.IsEnabled(Clinkz.Shivasguard) then Ability.CastNoTarget(shiva) end
+if abyssalblade and Ability.IsReady(abyssalblade, myMana) and Menu.IsEnabled(Clinkz.Abyssalblade) then Ability.CastTarget(abyssalblade, enemy) end
+if orchid and Ability.IsReady(orchid, myMana) and Menu.IsEnabled(Clinkz.Orchid) then Ability.CastTarget(orchid, enemy) end
+if nullifier and Ability.IsReady(nullifier, myMana) and Menu.IsEnabled(Clinkz.Nullifier) then Ability.CastTarget(nullifier, enemy) end
+if solarcrest and Ability.IsReady(solarcrest) and Menu.IsEnabled(Clinkz.Solarcrest) then Ability.CastTarget(solarcrest, enemy) end
+end
+end
 end
 
-function Clinkz.Combo(myHero, enemy)
-
-	local Strafe = NPC.GetAbilty(myHero, "clinkz_strafe")
-	local Arrows = NPC.GetAbilty(myHero, "clinkz_searing_arrows")
-	local Army = NPC.GetAbilty(myHero, "burning_army_clinkz")
-	--Проверка манны--
-	myMana = NPC.GetMana(myHero)
-	--Проверки--
-	if Menu.IsKeyDown(Clinkz.optionKey) and Entity.GetHealth(enemy) > 0  then
-		if not NPC.IsEntityInRange(myHero, enemy, 500)	then return end
-        local enemy_origin = Entity.GetAbsOrigin(enemy)
-        local hp = Entity.GetHealth(myHero)
-        local maxhp = Entity.GetMaxHealth(myHero)
-        local cursor_pos = Input.GetWorldCursorPos()
-	    if (cursor_pos - enemy_origin):Length2D() > Menu.GetValue(Clinkz.NearestTarget) then enemy = nil return end
-        if Clinkzn.SleepReady(0.6) then
-	--Скилы--
-	if strafe and Ability.CastNoTarget(strafe, myMana) and menu.IsEnable(Clinkz.Strafe) then
-		Ability.CastNoTarget(strafe)
-	end
-	if arrows and Ability.CastTarget(arrows, myMana) and menu.IsEnable(Clinkz.Arrows) then
-		Ability.CastTarget(arrows)
-	end
-	if army and Ability.CastTarget(Army, myMana) and menu.IsEnable(Clinkz.Army) then
-		Ability.CastTarget(army)
-	end
-	--Предметы--
-		if blackkingbar and Ability.IsReady(blackkingbar) and Menu.IsEnabled(Clinkz.blackkingbar) then Ability.CastNoTarget(blackkingbar) end
-        if shivasguard and Ability.IsReady(shivasguard, myMana) and Menu.IsEnabled(Clinkzn.shivasguard) then Ability.CastNoTarget(shiva) end
-        if abyssalblade and Ability.IsReady(Abyssalblade, myMana) and Menu.IsEnabled(Clinkzn.abyssalblade) then Ability.CastTarget(Abyssalbladey) end
-        if orchid and Ability.IsReady(Orchid, myMana) and Menu.IsEnabled(Clinkzn.orchid) then Ability.CastTarget(Orchid) end
-        if nullifier and Ability.IsReady(Nullifier, myMana) and Menu.IsEnabled(Clinkzn.nullifier) then Ability.CastTarget(Nullifier) end
-        if solarcrest and Ability.IsReady(SolarCrest, myMana) and Menu.IsEnabled(Clinkzn.solarcrest) then Ability.CastTarget(SolarCrest) end
-        end
+function Clinkz.SleepReady(sleep, lastTick)
+if (os.clock() - Clinkz.lastTick) >= sleep then return true
 end
+
+return false
 end
 
 return Clinkz
